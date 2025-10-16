@@ -4,9 +4,10 @@ import 'package:image_picker/image_picker.dart';
 
 class AddPlantScreen extends StatefulWidget {
   final String greenhouseName;
-  AddPlantScreen({this.greenhouseName = 'Greenhouse A'});
+  const AddPlantScreen({super.key, this.greenhouseName = 'Greenhouse A'});
+
   @override
-  _AddPlantScreenState createState() => _AddPlantScreenState();
+  State<AddPlantScreen> createState() => _AddPlantScreenState();
 }
 
 class _AddPlantScreenState extends State<AddPlantScreen> {
@@ -20,76 +21,112 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
   Future<void> _pickImage() async {
     final XFile? file =
         await _picker.pickImage(source: ImageSource.gallery, imageQuality: 75);
-    if (file != null)
+    if (file != null) {
       setState(() {
         _pickedImage = File(file.path);
         _image.text = file.name;
       });
+    }
   }
 
   void _save() => Navigator.of(context).pop();
 
   @override
   Widget build(BuildContext context) {
-    final bg = Color(0xFF6B8A4A);
+    final bg = const Color(0xFF6B8A4A);
     return Scaffold(
       backgroundColor: bg,
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Header Row
               Row(
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.of(context).pop(),
                     child: Container(
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                          color: Colors.white24, shape: BoxShape.circle),
-                      child: Icon(Icons.arrow_back, color: Colors.white),
+                      padding: const EdgeInsets.all(8),
+                      decoration: const BoxDecoration(
+                        color: Colors.white24,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.arrow_back, color: Colors.white),
                     ),
                   ),
-                  SizedBox(width: 12),
-                  Text('Add plant',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18)),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'Add Plant',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
                 ],
               ),
-              SizedBox(height: 24),
-              Text(widget.greenhouseName,
-                  style: TextStyle(color: Colors.white70)),
-              SizedBox(height: 12),
+              const SizedBox(height: 20),
+
+              // Greenhouse Name
+              Center(
+                child: Text(
+                  widget.greenhouseName,
+                  style: const TextStyle(color: Colors.white70, fontSize: 16),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Plant Name
+              const Text(
+                'Plant Name',
+                style: TextStyle(color: Colors.white70, fontSize: 14),
+              ),
+              const SizedBox(height: 6),
               TextField(
                 controller: _name,
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Color(0xFFE9F5C6),
-                  hintText: 'Plant Name',
+                  fillColor: const Color(0xFFE9F5C6),
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none),
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 16),
+
+              // Plant Type Dropdown
+              const Text(
+                'Plant Type',
+                style: TextStyle(color: Colors.white70, fontSize: 14),
+              ),
+              const SizedBox(height: 6),
               DropdownButtonFormField<String>(
                 value: _plantType,
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Color(0xFFE9F5C6),
+                  fillColor: const Color(0xFFE9F5C6),
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none),
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
-                hint: Text('Plant Type'),
+                hint: const Text('Select plant type'),
                 items: ['Tomato', 'Potato', 'Pepper']
                     .map((p) => DropdownMenuItem(value: p, child: Text(p)))
                     .toList(),
                 onChanged: (v) => setState(() => _plantType = v),
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 16),
+
+              // Image Picker
+              const Text(
+                'Plant Image',
+                style: TextStyle(color: Colors.white70, fontSize: 14),
+              ),
+              const SizedBox(height: 6),
               Stack(
                 children: [
                   TextField(
@@ -97,11 +134,11 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
                     readOnly: true,
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: Color(0xFFE9F5C6),
-                      hintText: 'Plant image',
+                      fillColor: const Color(0xFFE9F5C6),
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none),
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
                     ),
                   ),
                   Positioned(
@@ -111,48 +148,70 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
                     child: InkWell(
                       onTap: _pickImage,
                       child: Container(
-                        padding: EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                            color: Color(0xFFDFE9B3),
-                            borderRadius: BorderRadius.circular(8)),
-                        child:
-                            Icon(Icons.photo_library, color: Color(0xFF2C3A1A)),
+                          color: const Color(0xFFDFE9B3),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(Icons.photo_library,
+                            color: Color(0xFF2C3A1A)),
                       ),
                     ),
                   ),
                 ],
               ),
               if (_pickedImage != null) ...[
-                SizedBox(height: 8),
+                const SizedBox(height: 10),
                 ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.file(_pickedImage!,
-                        height: 120,
-                        width: double.infinity,
-                        fit: BoxFit.cover)),
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.file(
+                    _pickedImage!,
+                    height: 150,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ],
-              SizedBox(height: 12),
+              const SizedBox(height: 16),
+
+              // Location
+              const Text(
+                'Location',
+                style: TextStyle(color: Colors.white70, fontSize: 14),
+              ),
+              const SizedBox(height: 6),
               TextField(
                 controller: _location,
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Color(0xFFE9F5C6),
-                  hintText: 'Location',
+                  fillColor: const Color(0xFFE9F5C6),
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none),
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 24),
+
+              // Save Button
               Align(
                 alignment: Alignment.centerRight,
-                child: ElevatedButton(
+                child: ElevatedButton.icon(
                   onPressed: _save,
+                  icon: const Icon(Icons.save, color: Colors.white),
+                  label:
+                      const Text('Save', style: TextStyle(color: Colors.white)),
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF2C3A1A)),
-                  child: Text('Save'),
+                    backgroundColor: const Color(0xFF2C3A1A),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
                 ),
               ),
+              const SizedBox(height: 12),
             ],
           ),
         ),

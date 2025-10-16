@@ -19,6 +19,9 @@ import 'admin_home_screen.dart';
 import 'manage_greenhouses_screen.dart';
 import 'manage_managers_screen.dart';
 import 'manage_plants_screen.dart';
+import 'manage_assignment_screen.dart';
+import 'update_user_info_screen.dart';
+import 'plant_type_list_screen.dart';
 
 void main() {
   runApp(SmartAgriGuardApp());
@@ -53,6 +56,11 @@ class SmartAgriGuardApp extends StatelessWidget {
         '/manage_greenhouses': (context) => ManageGreenhousesScreen(),
         '/manage_managers': (context) => ManageManagersScreen(),
         '/manage_plants': (context) => ManagePlantsScreen(),
+        '/manage_manager_assignments': (context) => ManageAssignmentScreen(
+              greenhouseName: "",
+            ),
+        '/update_user_info': (context) => UpdateUserInfoScreen(),
+        '/manage_plants_Type': (context) => const PlantTypeListScreen(),
       },
     );
   }

@@ -1,30 +1,40 @@
 import 'package:flutter/material.dart';
+import '../../core/constants/colors.dart';
+import '../../core/constants/text_styles.dart';
 import 'add_greenhouse_screen.dart';
 import 'update_greenhouse_screen.dart';
+import 'greenhouse_detail_screen.dart';
+import '../../core/widgets/GHItem.dart';
 
 class ManageGreenhousesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final bg = Color(0xFF6B8A4A);
+    final size = MediaQuery.of(context).size;
+    final outerPadding = size.width * 0.05;
+    final bg = AppColors.primaryBackground;
+
     return Scaffold(
       backgroundColor: bg,
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+          padding: EdgeInsets.symmetric(
+              horizontal: outerPadding, vertical: size.height * 0.015),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Header
               Row(
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.of(context).pop(),
                     child: Container(
-                      padding: EdgeInsets.all(8),
+                      padding: EdgeInsets.all(size.width * 0.02),
                       decoration: BoxDecoration(
                           color: Colors.white24, shape: BoxShape.circle),
                       child: Icon(Icons.arrow_back, color: Colors.white),
                     ),
                   ),
-                  SizedBox(width: 12),
+                  SizedBox(width: size.width * 0.03),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,16 +42,16 @@ class ManageGreenhousesScreen extends StatelessWidget {
                         Row(
                           children: [
                             Image.asset('assets/logo.png',
-                                width: 26, height: 26),
-                            SizedBox(width: 8),
+                                width: size.width * 0.06,
+                                height: size.width * 0.06,
+                                errorBuilder: (c, e, st) => SizedBox.shrink()),
+                            SizedBox(width: size.width * 0.02),
                             Text('Smart Agri-Guard',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18)),
+                                style: AppTextStyles.title.copyWith(
+                                    fontSize: 18, color: Colors.white)),
                           ],
                         ),
-                        SizedBox(height: 6),
+                        SizedBox(height: size.height * 0.005),
                         Text('Manage Greenhouses',
                             style:
                                 TextStyle(color: Colors.white70, fontSize: 13)),
@@ -54,7 +64,7 @@ class ManageGreenhousesScreen extends StatelessWidget {
                         MaterialPageRoute(
                             builder: (_) => AddGreenhouseScreen())),
                     child: Container(
-                      padding: EdgeInsets.all(8),
+                      padding: EdgeInsets.all(size.width * 0.02),
                       decoration: BoxDecoration(
                           color: Colors.white24, shape: BoxShape.circle),
                       child: Icon(Icons.add, color: Colors.white),
@@ -62,68 +72,99 @@ class ManageGreenhousesScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 18),
+
+              SizedBox(height: size.height * 0.02),
+
+              // List of greenhouses
               Expanded(
                 child: ListView(
                   children: [
-                    _GHItem(
-                        name: 'Greenhouse A',
-                        image: 'assets/pepper.jpg',
-                        onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => UpdateGreenhouseScreen(
-                                    name: 'Greenhouse A')))),
-                    _GHItem(
-                        name: 'Greenhouse B',
-                        image: 'assets/tomato.jpg',
-                        onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => UpdateGreenhouseScreen(
-                                    name: 'Greenhouse B')))),
-                    SizedBox(height: 24),
+                    GHItem(
+                      name: 'Greenhouse A',
+                      image: 'assets/Greenhouse.png',
+                      location: 'North Field',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              GreenhouseDetailScreen(name: 'Greenhouse A'),
+                        ),
+                      ),
+                      onEdit: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              UpdateGreenhouseScreen(name: 'Greenhouse A'),
+                        ),
+                      ),
+                      size: size,
+                    ),
+                    GHItem(
+                      name: 'Greenhouse B',
+                      image: 'assets/Greenhouse.png',
+                      location: 'South Zone',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              GreenhouseDetailScreen(name: 'Greenhouse B'),
+                        ),
+                      ),
+                      onEdit: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              UpdateGreenhouseScreen(name: 'Greenhouse B'),
+                        ),
+                      ),
+                      size: size,
+                    ),
+                    GHItem(
+                      name: 'Greenhouse C',
+                      image: 'assets/Greenhouse.png',
+                      location: 'East Side',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              GreenhouseDetailScreen(name: 'Greenhouse C'),
+                        ),
+                      ),
+                      onEdit: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              UpdateGreenhouseScreen(name: 'Greenhouse C'),
+                        ),
+                      ),
+                      size: size,
+                    ),
+                    GHItem(
+                      name: 'Greenhouse D',
+                      image: 'assets/Greenhouse.png',
+                      location: 'West End',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              GreenhouseDetailScreen(name: 'Greenhouse D'),
+                        ),
+                      ),
+                      onEdit: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              UpdateGreenhouseScreen(name: 'Greenhouse D'),
+                        ),
+                      ),
+                      size: size,
+                    ),
+                    SizedBox(height: size.height * 0.03),
                   ],
                 ),
-              )
+              ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _GHItem extends StatelessWidget {
-  final String name;
-  final String image;
-  final VoidCallback onTap;
-
-  const _GHItem({required this.name, required this.image, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 10),
-        padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(
-            color: Color(0xFFE9F5C6), borderRadius: BorderRadius.circular(12)),
-        child: Row(
-          children: [
-            ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.asset(image,
-                    width: 48, height: 48, fit: BoxFit.cover)),
-            SizedBox(width: 12),
-            Expanded(
-                child: Text(name,
-                    style: TextStyle(
-                        color: Color(0xFF2C3A1A),
-                        fontWeight: FontWeight.w600))),
-            Icon(Icons.arrow_forward_ios, size: 16, color: Color(0xFF2C3A1A)),
-          ],
         ),
       ),
     );

@@ -106,7 +106,7 @@ class ManagerScreen extends StatelessWidget {
                   IconButton(
                     icon: Icon(Icons.settings, color: Colors.white),
                     onPressed: () {
-                      Navigator.pushNamed(context, '/settings_manager');
+                      Navigator.pushNamed(context, '/settings');
                     },
                   ),
                 ],

@@ -2,16 +2,21 @@ name: smart_agri_guard
 description: A smart agriculture system for monitoring and improving plant health
 publish_to: 'none'
 version: 1.0.0+1
+
 environment:
   sdk: '>=2.17.0 <4.0.0'
+
 dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
+  fl_chart: ^0.55.1 
   image_picker: ^0.8.7+5
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
 flutter:
   uses-material-design: true
   assets:

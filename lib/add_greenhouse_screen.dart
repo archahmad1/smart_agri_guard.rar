@@ -1,16 +1,18 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AddGreenhouseScreen extends StatefulWidget {
+  const AddGreenhouseScreen({super.key});
+
   @override
-  _AddGreenhouseScreenState createState() => _AddGreenhouseScreenState();
+  State<AddGreenhouseScreen> createState() => _AddGreenhouseScreenState();
 }
 
 class _AddGreenhouseScreenState extends State<AddGreenhouseScreen> {
   final TextEditingController _name = TextEditingController();
   final TextEditingController _image = TextEditingController();
+  final TextEditingController _location = TextEditingController();
   File? _pickedImage;
   final ImagePicker _picker = ImagePicker();
 
@@ -25,65 +27,77 @@ class _AddGreenhouseScreenState extends State<AddGreenhouseScreen> {
     }
   }
 
-  final TextEditingController _location = TextEditingController();
-
   void _save() {
+    // TODO: Implement save logic
     Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
-    final bg = Color(0xFF6B8A4A);
+    final bg = const Color(0xFF6B8A4A);
+
     return Scaffold(
       backgroundColor: bg,
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Header
               Row(
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.of(context).pop(),
                     child: Container(
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                          color: Colors.white24, shape: BoxShape.circle),
-                      child: Icon(Icons.arrow_back, color: Colors.white),
+                      padding: const EdgeInsets.all(8),
+                      decoration: const BoxDecoration(
+                        color: Colors.white24,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.arrow_back, color: Colors.white),
                     ),
                   ),
-                  SizedBox(width: 12),
-                  Text('Add Greenhouse',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18)),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'Add Greenhouse',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20),
+                  ),
                 ],
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
+
+              // Name field
               TextField(
                 controller: _name,
                 decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Color(0xFFE9F5C6),
-                    hintText: 'Greenhouse Name',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none)),
+                  filled: true,
+                  fillColor: const Color(0xFFE9F5C6),
+                  hintText: 'Greenhouse Name',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none),
+                ),
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 16),
+
+              // Image picker
               Stack(
                 children: [
                   TextField(
                     controller: _image,
                     readOnly: true,
                     decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Color(0xFFE9F5C6),
-                        hintText: 'Greenhouse Image',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide.none)),
+                      filled: true,
+                      fillColor: const Color(0xFFE9F5C6),
+                      hintText: 'Greenhouse Image',
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none),
+                    ),
                   ),
                   Positioned(
                     right: 8,
@@ -92,50 +106,64 @@ class _AddGreenhouseScreenState extends State<AddGreenhouseScreen> {
                     child: InkWell(
                       onTap: _pickImage,
                       child: Container(
-                        padding: EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: Color(0xFFDFE9B3),
+                          color: const Color(0xFFDFE9B3),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child:
-                            Icon(Icons.photo_library, color: Color(0xFF2C3A1A)),
+                        child: const Icon(Icons.photo_library,
+                            color: Color(0xFF2C3A1A)),
                       ),
                     ),
                   ),
                 ],
               ),
               if (_pickedImage != null) ...[
-                SizedBox(height: 8),
+                const SizedBox(height: 12),
                 ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.file(_pickedImage!,
-                        height: 120,
-                        width: double.infinity,
-                        fit: BoxFit.cover)),
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.file(
+                    _pickedImage!,
+                    height: 150,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ],
-              SizedBox(height: 12),
+              const SizedBox(height: 16),
+
+              // Location field
               TextField(
                 controller: _location,
                 decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Color(0xFFE9F5C6),
-                    hintText: 'Location',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none)),
-              ),
-              SizedBox(height: 20),
-              Align(
-                alignment: Alignment.centerRight,
-                child: ElevatedButton(
-                  onPressed: _save,
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF2C3A1A),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8))),
-                  child: Text('Save'),
+                  filled: true,
+                  fillColor: const Color(0xFFE9F5C6),
+                  hintText: 'Location',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none),
                 ),
-              )
+              ),
+              const SizedBox(height: 24),
+
+              // Save button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.save),
+                  label: const Text(
+                    'Save Greenhouse',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF2C3A1A),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                  ),
+                  onPressed: _save,
+                ),
+              ),
             ],
           ),
         ),

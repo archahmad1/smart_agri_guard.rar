@@ -7,26 +7,8 @@ class PlantHistoryScreen extends StatefulWidget {
 }
 
 class _PlantHistoryScreenState extends State<PlantHistoryScreen> {
-  // month/year selectors (match archived trends style)
-  final List<int> _years = List.generate(12, (i) => 2016 + i); // 2016..2027
-  final List<String> _months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec'
-  ];
-  String leftMonth = 'Apr';
-  String rightMonth = 'Apr';
-  int leftYear = DateTime.now().year;
-  int rightYear = DateTime.now().year;
+  DateTime _startDate = DateTime.now().subtract(Duration(days: 7));
+  DateTime _endDate = DateTime.now();
 
   final Map<String, bool> factors = {
     'Temperature': true,
@@ -35,23 +17,33 @@ class _PlantHistoryScreenState extends State<PlantHistoryScreen> {
     'Phosphorus': false,
     'Potassium': false,
     'Nitrogen': false,
+    'Soil Moisture': false,
   };
 
-  // chart data (map of metric -> points)
   Map<String, List<double>> _seriesMap = {};
 
-  // old dialog-based month picker removed; using dropdowns in the selector card below
-
-  DateTime get _rangeStart {
-    final m = _months.indexOf(leftMonth) + 1;
-    return DateTime(leftYear, m, 1);
+  Future<void> _pickStartDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _startDate,
+      firstDate: DateTime(2016),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null && picked != _startDate) {
+      setState(() => _startDate = picked);
+    }
   }
 
-  DateTime get _rangeEnd {
-    final m = _months.indexOf(rightMonth) + 1;
-    // end of month
-    final lastDay = DateTime(rightYear, m + 1, 0).day;
-    return DateTime(rightYear, m, lastDay, 23, 59, 59);
+  Future<void> _pickEndDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _endDate,
+      firstDate: DateTime(2016),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null && picked != _endDate) {
+      setState(() => _endDate = picked);
+    }
   }
 
   void _generateSampleChart() {
@@ -64,24 +56,22 @@ class _PlantHistoryScreenState extends State<PlantHistoryScreen> {
       Colors.brown
     ];
     int ci = 0;
-    // compute days between selected start and end (inclusive)
-    var start = _rangeStart;
-    var end = _rangeEnd;
+    var start = _startDate;
+    var end = _endDate;
     if (end.isBefore(start)) {
       final tmp = start;
       start = end;
       end = tmp;
     }
     final days = end.difference(start).inDays + 1;
-    final pointsCount = days.clamp(3, 60); // keep reasonable bounds
+    final pointsCount = days.clamp(3, 60);
 
-    // generate series map like ArchivedTrends
     final rnd = Random(start.millisecondsSinceEpoch);
     Map<String, List<double>> generated = {};
     factors.forEach((k, v) {
       if (v) {
-        generated[k] = List.generate(
-            pointsCount, (i) => 20 + rnd.nextDouble() * (10 + i % 5));
+        generated[k] =
+            List.generate(pointsCount, (i) => 20 + rnd.nextDouble() * 10);
         ci++;
       }
     });
@@ -134,37 +124,92 @@ class _PlantHistoryScreenState extends State<PlantHistoryScreen> {
                       fontWeight: FontWeight.bold)),
               SizedBox(height: 14),
 
+              // Date range pickers
               Row(
                 children: [
-                  Expanded(child: _selectorCard(leftMonth, leftYear, true)),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: _pickStartDate,
+                      child: Container(
+                        padding: EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                            color: Color(0xFFE9F5C6),
+                            borderRadius: BorderRadius.circular(12)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Start Date',
+                                style: TextStyle(
+                                    fontSize: 12, color: Color(0xFF50623A))),
+                            SizedBox(height: 6),
+                            Text(
+                              "${_startDate.day}-${_startDate.month}-${_startDate.year}",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF2C3A1A)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                   SizedBox(width: 12),
-                  Expanded(child: _selectorCard(rightMonth, rightYear, false)),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: _pickEndDate,
+                      child: Container(
+                        padding: EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                            color: Color(0xFFE9F5C6),
+                            borderRadius: BorderRadius.circular(12)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('End Date',
+                                style: TextStyle(
+                                    fontSize: 12, color: Color(0xFF50623A))),
+                            SizedBox(height: 6),
+                            Text(
+                              "${_endDate.day}-${_endDate.month}-${_endDate.year}",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF2C3A1A)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
+
               SizedBox(height: 12),
 
+              // Factor selector
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 decoration: BoxDecoration(
                     color: Color(0xFFE9F5C6),
                     borderRadius: BorderRadius.circular(12)),
                 child: Wrap(
-                    spacing: 12,
-                    runSpacing: 8,
-                    children: factors.keys.map((k) {
-                      return Row(mainAxisSize: MainAxisSize.min, children: [
-                        Checkbox(
-                            value: factors[k],
-                            onChanged: (v) =>
-                                setState(() => factors[k] = v ?? false),
-                            activeColor: Color(0xFF50623A)),
-                        SizedBox(width: 6),
-                        Text(k, style: TextStyle(color: Color(0xFF50623A)))
-                      ]);
-                    }).toList()),
+                  spacing: 12,
+                  runSpacing: 8,
+                  children: factors.keys.map((k) {
+                    return Row(mainAxisSize: MainAxisSize.min, children: [
+                      Checkbox(
+                          value: factors[k],
+                          onChanged: (v) =>
+                              setState(() => factors[k] = v ?? false),
+                          activeColor: Color(0xFF50623A)),
+                      SizedBox(width: 6),
+                      Text(k, style: TextStyle(color: Color(0xFF50623A)))
+                    ]);
+                  }).toList(),
+                ),
               ),
 
               SizedBox(height: 12),
+
               Align(
                 alignment: Alignment.centerRight,
                 child: ElevatedButton(
@@ -197,12 +242,11 @@ class _PlantHistoryScreenState extends State<PlantHistoryScreen> {
                     padding: const EdgeInsets.all(12.0),
                     child: _seriesMap.isEmpty
                         ? Center(
-                            child: Text('Chart',
+                            child: Text('Chart will appear here',
                                 style: TextStyle(color: Color(0xFF50623A))))
                         : CustomPaint(
                             size: Size(double.infinity, 200),
                             painter: _TrendsPainter(series: _seriesMap),
-                            child: Container(),
                           ),
                   ),
                 ),
@@ -210,57 +254,6 @@ class _PlantHistoryScreenState extends State<PlantHistoryScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _selectorCard(String month, int year, bool left) {
-    return Container(
-      decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(12)),
-      padding: EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Select month', style: TextStyle(color: Color(0xFF50623A))),
-          SizedBox(height: 8),
-          Row(
-            children: [
-              Expanded(
-                child: DropdownButtonFormField<int>(
-                  initialValue: year,
-                  items: _years
-                      .map((y) =>
-                          DropdownMenuItem(value: y, child: Text(y.toString())))
-                      .toList(),
-                  onChanged: (v) => setState(() => left
-                      ? leftYear = v ?? leftYear
-                      : rightYear = v ?? rightYear),
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 8)),
-                ),
-              ),
-              SizedBox(width: 8),
-              Expanded(
-                child: DropdownButtonFormField<String>(
-                  initialValue: month,
-                  items: _months
-                      .map((m) => DropdownMenuItem(value: m, child: Text(m)))
-                      .toList(),
-                  onChanged: (v) => setState(() => left
-                      ? leftMonth = v ?? leftMonth
-                      : rightMonth = v ?? rightMonth),
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 8)),
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }
@@ -281,6 +274,7 @@ class _TrendsPainter extends CustomPainter {
     final w = size.width;
     final h = size.height;
 
+    // Draw axes
     canvas.drawLine(Offset(40, 10), Offset(40, h - 30), axis);
     canvas.drawLine(Offset(40, h - 30), Offset(w - 10, h - 30), axis);
 
@@ -295,8 +289,8 @@ class _TrendsPainter extends CustomPainter {
     int ci = 0;
     series.forEach((name, values) {
       final path = Path();
-      final maxVal = (values.reduce((a, b) => a > b ? a : b));
-      final minVal = (values.reduce((a, b) => a < b ? a : b));
+      final maxVal = values.reduce(max);
+      final minVal = values.reduce(min);
       for (var i = 0; i < values.length; i++) {
         final x = 40 + ((w - 60) * (i / max(1, values.length - 1)));
         final norm = (values[i] - minVal) / max(1e-6, (maxVal - minVal));
@@ -308,7 +302,6 @@ class _TrendsPainter extends CustomPainter {
       }
       paint.color = colors[ci % colors.length];
       canvas.drawPath(path, paint);
-
       ci++;
     });
   }

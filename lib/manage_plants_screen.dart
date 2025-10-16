@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import '../../core/constants/colors.dart';
+import '../../core/constants/text_styles.dart';
 import 'add_plant_screen.dart';
 import 'update_plant_screen.dart';
+import '../../core/widgets/plant_item.dart'; // separate reusable widget
 
 class ManagePlantsScreen extends StatelessWidget {
   final String greenhouseName;
@@ -8,128 +11,113 @@ class ManagePlantsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = Color(0xFF6B8A4A);
+    final size = MediaQuery.of(context).size;
+    final outerPadding = size.width * 0.05;
+    final bg = AppColors.primaryBackground;
+
     return Scaffold(
       backgroundColor: bg,
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+          padding: EdgeInsets.symmetric(
+              horizontal: outerPadding, vertical: size.height * 0.015),
           child: Column(
             children: [
               Row(
                 children: [
+                  // Back button
                   GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
-                      child: Container(
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                              color: Colors.white24, shape: BoxShape.circle),
-                          child: Icon(Icons.arrow_back, color: Colors.white))),
-                  SizedBox(width: 12),
+                    onTap: () => Navigator.of(context).pop(),
+                    child: Container(
+                      padding: EdgeInsets.all(size.width * 0.02),
+                      decoration: BoxDecoration(
+                          color: Colors.white24, shape: BoxShape.circle),
+                      child: Icon(Icons.arrow_back, color: Colors.white),
+                    ),
+                  ),
+                  SizedBox(width: size.width * 0.03),
+                  // Title
                   Expanded(
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
                           children: [
-                        Row(children: [
-                          Image.asset('assets/logo.png', width: 26, height: 26),
-                          SizedBox(width: 8),
-                          Text('Smart Agri-Guard',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold))
-                        ]),
-                        SizedBox(height: 6),
+                            Image.asset('assets/logo.png',
+                                width: size.width * 0.06,
+                                height: size.width * 0.06,
+                                errorBuilder: (c, e, st) => SizedBox.shrink()),
+                            SizedBox(width: size.width * 0.02),
+                            Text('Smart Agri-Guard',
+                                style: AppTextStyles.title.copyWith(
+                                    fontSize: 18, color: Colors.white)),
+                          ],
+                        ),
+                        SizedBox(height: size.height * 0.005),
                         Text(greenhouseName,
                             style:
-                                TextStyle(color: Colors.white70, fontSize: 13))
-                      ])),
+                                TextStyle(color: Colors.white70, fontSize: 13)),
+                      ],
+                    ),
+                  ),
+                  // Add button
                   GestureDetector(
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => AddPlantScreen(
-                                  greenhouseName: greenhouseName))),
-                      child: Container(
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                              color: Colors.white24, shape: BoxShape.circle),
-                          child: Icon(Icons.add, color: Colors.white))),
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => AddPlantScreen(
+                                greenhouseName: greenhouseName))),
+                    child: Container(
+                      padding: EdgeInsets.all(size.width * 0.02),
+                      decoration: BoxDecoration(
+                          color: Colors.white24, shape: BoxShape.circle),
+                      child: Icon(Icons.add, color: Colors.white),
+                    ),
+                  ),
                 ],
               ),
-              SizedBox(height: 18),
+              SizedBox(height: size.height * 0.02),
+
+              // Plant list
               Expanded(
-                  child: ListView(children: [
-                _PlantItem(
-                    name: 'Tomato',
-                    image: 'assets/tomato.jpg',
-                    onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => UpdatePlantScreen(
-                                name: 'Tomato',
-                                greenhouseName: greenhouseName)))),
-                _PlantItem(
-                    name: 'Potato',
-                    image: '',
-                    onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => UpdatePlantScreen(
-                                name: 'Potato',
-                                greenhouseName: greenhouseName)))),
-                _PlantItem(
-                    name: 'Pepper',
-                    image: 'assets/pepper.jpg',
-                    onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => UpdatePlantScreen(
-                                name: 'Pepper',
-                                greenhouseName: greenhouseName)))),
-              ])),
+                child: ListView(
+                  children: [
+                    PlantItem(
+                        name: 'Tomato',
+                        image: 'assets/tomato.jpg',
+                        size: size,
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => UpdatePlantScreen(
+                                    name: 'Tomato',
+                                    greenhouseName: greenhouseName)))),
+                    PlantItem(
+                        name: 'Potato',
+                        image: '', // no image
+                        size: size,
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => UpdatePlantScreen(
+                                    name: 'Potato',
+                                    greenhouseName: greenhouseName)))),
+                    PlantItem(
+                        name: 'Pepper',
+                        image: 'assets/pepper.jpg',
+                        size: size,
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => UpdatePlantScreen(
+                                    name: 'Pepper',
+                                    greenhouseName: greenhouseName)))),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _PlantItem extends StatelessWidget {
-  final String name;
-  final String image;
-  final VoidCallback onTap;
-  const _PlantItem(
-      {required this.name, required this.image, required this.onTap});
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 10),
-        padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(
-            color: Color(0xFFE9F5C6), borderRadius: BorderRadius.circular(12)),
-        child: Row(children: [
-          if (image.isNotEmpty)
-            ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.asset(image,
-                    width: 48, height: 48, fit: BoxFit.cover))
-          else
-            Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8))),
-          SizedBox(width: 12),
-          Expanded(
-              child: Text(name,
-                  style: TextStyle(
-                      color: Color(0xFF2C3A1A), fontWeight: FontWeight.w600))),
-          Icon(Icons.arrow_forward_ios, size: 16, color: Color(0xFF2C3A1A)),
-        ]),
       ),
     );
   }

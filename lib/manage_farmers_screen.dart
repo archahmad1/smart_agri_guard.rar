@@ -198,7 +198,7 @@ class _AddFarmerScreenState extends State<AddFarmerScreen> {
                       child: Builder(builder: (ctx) {
                         final plantOptions = ['Tomato', 'Pepper', 'Potato'];
                         return DropdownButtonFormField<String>(
-                          value: plantOptions.contains(_assignPlant)
+                          initialValue: plantOptions.contains(_assignPlant)
                               ? _assignPlant
                               : null,
                           items: plantOptions
@@ -336,7 +336,7 @@ class _UpdateFarmerScreenState extends State<UpdateFarmerScreen> {
                     Builder(builder: (ctx) {
                       final plantOptions = ['Tomato', 'Pepper', 'Potato'];
                       return DropdownButtonFormField<String>(
-                        value: plantOptions.contains(_assignPlant)
+                        initialValue: plantOptions.contains(_assignPlant)
                             ? _assignPlant
                             : null,
                         items: plantOptions

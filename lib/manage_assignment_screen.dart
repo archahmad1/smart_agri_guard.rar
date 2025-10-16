@@ -198,7 +198,7 @@ class _ManageAssignmentScreenState extends State<ManageAssignmentScreen> {
         ),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
-          value: selectedManager,
+          initialValue: selectedManager,
           hint: const Text('Select a manager'),
           items: ['Alice Smith', 'Bob Johnson', 'Charlie White']
               .map((name) => DropdownMenuItem(value: name, child: Text(name)))

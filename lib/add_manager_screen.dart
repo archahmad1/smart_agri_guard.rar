@@ -101,7 +101,7 @@ class _AddManagerScreenState extends State<AddManagerScreen> {
 
               // Assign Greenhouse Dropdown
               DropdownButtonFormField<String>(
-                value: _assignedGreenhouse,
+                initialValue: _assignedGreenhouse,
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: const Color(0xFFE9F5C6),

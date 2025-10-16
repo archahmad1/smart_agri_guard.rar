@@ -104,7 +104,7 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
               ),
               const SizedBox(height: 6),
               DropdownButtonFormField<String>(
-                value: _plantType,
+                initialValue: _plantType,
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: const Color(0xFFE9F5C6),
